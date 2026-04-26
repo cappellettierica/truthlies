@@ -1,3 +1,15 @@
 .venv/
 __pycache__/
 .ipynb_checkpoints/
+*.pyc  
+*.pyo
+*.pyd
+
+outputs/results/*.csv 
+outputs/results/*.json 
+outputs/figures/*.png 
+outputs/figures/*.pdf
+.DS_Store
+
+models/
+.cache/
