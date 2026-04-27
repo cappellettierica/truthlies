@@ -1,0 +1,27 @@
+project:
+  name: "truth-lies-reasoning-machines"
+  seed: 42
+
+model:
+  name: "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+  max_new_tokens: 60
+  temperature: 0.0
+  do_sample: false
+  device: "auto"
+
+data:
+  truthfulqa_split: "validation"
+  hotpotqa_split: "validation"
+  max_examples: 3
+
+experiment:
+  conditions:
+    - baseline
+    - noisy
+    - adversarial
+    - self_check
+
+outputs:
+  results_dir: "outputs/results"
+  figures_dir: "outputs/figures"
+  results_file: "outputs/results/experiment_results.csv"
