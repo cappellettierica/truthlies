@@ -12,7 +12,7 @@ model:
 data:
   truthfulqa_split: "validation"
   hotpotqa_split: "validation"
-  max_examples: 3
+  max_examples: 15
 
 experiment:
   conditions:

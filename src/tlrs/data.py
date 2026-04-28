@@ -12,8 +12,8 @@ class ReasoningExample:
     source_dataset: str
 
 class DatasetLoader:
-    def __init__(self, max_examples: int = 20):
-        self.max_examples = max_examples
+    def __init__(self, config: dict):
+        self.max_examples = config["data"]["max_examples"]
 
     def load_truthfulqa(self, split: str = "validation") -> List[ReasoningExample]:
         dataset = load_dataset("truthful_qa", "generation", split=split)
