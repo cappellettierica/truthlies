@@ -79,7 +79,18 @@ class CausalLanguageModel:
 
         answer_only = generated_text[len(prompt):].strip()
 
-        stop_markers = ["\nQuestion:", "\n\nQuestion:", "\nAnswer:", "\nCheck:"]
+        stop_markers = [
+                            "\nQuestion:",
+                            "\n\nQuestion:",
+                            "\nQ:",
+                            "\nA:",
+                            "\nAnswer:",
+                            "\nCheck:",
+                            "\nBased on",
+                            "\nRemember",
+                            "\nHowever"
+                            "\nMoreover"
+                        ]
 
         for marker in stop_markers:
             if marker in answer_only:

@@ -4,7 +4,7 @@ project:
 
 model:
   name: "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
-  max_new_tokens: 60
+  max_new_tokens: 80
   temperature: 0.0
   do_sample: false
   device: "auto"
@@ -12,7 +12,7 @@ model:
 data:
   truthfulqa_split: "validation"
   hotpotqa_split: "validation"
-  max_examples: 15
+  max_examples: 5
 
 experiment:
   conditions:
