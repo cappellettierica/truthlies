@@ -11,7 +11,7 @@ class EvaluationResult:
     """
     Evaluation scores for one model answer.
     """
-    exact_match: float
+    # exact_match: float
     contains_reference: float
     fuzzy_match: float
     contradiction_marker: float
@@ -29,7 +29,7 @@ def normalize_text(text: str) -> str:
     return text.strip()
 
 
-def exact_match(prediction: str, reference: str) -> float:
+# def exact_match(prediction: str, reference: str) -> float:
     """
     Compute exact-match score.
     """
@@ -50,7 +50,8 @@ def fuzzy_match_score(prediction: str, reference: str) -> float:
 
 def contains_reference_answer(prediction: str, reference: str) -> float:
     """
-    Check whether the reference answer appears in the prediction.
+    Check whether the reference answer appears in the prediction as a substring. 
+    Useful but not indicative of how correct an answer is.
     """
     normalized_prediction = normalize_text(prediction)
     normalized_reference = normalize_text(reference)
@@ -96,7 +97,7 @@ def evaluate_answer(prediction: str, reference: str) -> EvaluationResult:
     # Inspired by: L10.3-bias-completion-task.ipynb — output aggregation and comparison.
     """
     return EvaluationResult(
-        exact_match=exact_match(prediction, reference),
+        # exact_match=exact_match(prediction, reference),
         contains_reference=contains_reference_answer(prediction, reference),
         fuzzy_match=fuzzy_match_score(prediction, reference),
         contradiction_marker=contradiction_marker_score(prediction),
@@ -109,7 +110,7 @@ def evaluation_to_dict(result: EvaluationResult) -> Dict[str, float]:
     Convert evaluation result to dictionary.
     """
     return {
-        "exact_match": result.exact_match,
+        # "exact_match": result.exact_match,
         "contains_reference": result.contains_reference,
         "fuzzy_match": result.fuzzy_match,
         "contradiction_marker": result.contradiction_marker,
