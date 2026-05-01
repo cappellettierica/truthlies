@@ -65,18 +65,19 @@ def contains_reference_answer(prediction: str, reference: str) -> float:
 def contradiction_marker_score(prediction: str) -> float:
     """
     Detect whether the model explicitly notices possible contradiction.
-
-    This is a lightweight proxy metric, not a complete logical validator.
     """
     markers = [
-        "contradiction",
-        "inconsistent",
-        "false assumption",
-        "misleading",
-        "not enough information",
-        "unsupported",
-        "cannot determine",
-    ]
+    "contradiction",
+    "inconsistent",
+    "false",
+    "misleading",
+    "incorrect",
+    "wrong",
+    "not enough information",
+    "cannot determine",
+    "uncertain",
+    "depends",
+]
 
     prediction = normalize_text(prediction)
 
@@ -91,11 +92,7 @@ def reasoning_length(prediction: str) -> int:
 
 
 def evaluate_answer(prediction: str, reference: str) -> EvaluationResult:
-    """
-    Evaluate a generated answer.
-
-    # Inspired by: L10.3-bias-completion-task.ipynb — output aggregation and comparison.
-    """
+    # L10.3-bias-completion-task.ipynb (output aggregation and comparison)
     return EvaluationResult(
         # exact_match=exact_match(prediction, reference),
         contains_reference=contains_reference_answer(prediction, reference),
