@@ -35,7 +35,7 @@ Q: {example.question}
 Give your answer.
 Then briefly say whether your answer might be uncertain.
 
-Answer:
+A:
 """.strip()
 
 

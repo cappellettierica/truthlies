@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -88,8 +87,8 @@ class CausalLanguageModel:
                             "\nCheck:",
                             "\nBased on",
                             "\nRemember",
-                            "\nHowever"
-                            "\nMoreover"
+                            "\nHowever",
+                            "\nMoreover",
                         ]
 
         for marker in stop_markers:
@@ -97,7 +96,7 @@ class CausalLanguageModel:
                 answer_only = answer_only.split(marker)[0].strip()
 
         return ModelOutput(text=answer_only)
-
+    
     def inspect_next_token_probabilities(
         self,
         prompt: str,
@@ -123,4 +122,7 @@ class CausalLanguageModel:
             for index in top_indices[0]
         ]
 
-        return list(zip(tokens, top_probs[0].float().cpu().numpy()))
+        return [
+            (token, float(prob))
+            for token, prob in zip(tokens, top_probs[0].cpu())
+        ]

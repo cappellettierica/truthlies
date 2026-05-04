@@ -45,8 +45,48 @@ def make_all_plots(results_path: str, figures_dir: str) -> None:
         "contains_reference",
         "contradiction_marker",
         "reasoning_length",
+        "truth_token_probability",
     ]
 
     for metric in metrics:
         output_path = Path(figures_dir) / f"{metric}_by_condition.png"
         plot_metric_by_condition(results, metric, str(output_path))
+
+        dataset_output_path = Path(figures_dir) / f"{metric}_by_dataset_and_condition.png"
+        plot_metric_by_dataset_and_condition(
+            results,
+            metric,
+            str(dataset_output_path),
+        )
+
+def plot_metric_by_dataset_and_condition(
+        results: pd.DataFrame,
+        metric: str,
+        output_path: str,
+    ) -> None:
+        """
+        Plot average metric by dataset and experimental condition.
+        """
+        summary = (
+            results
+            .groupby(["source_dataset", "condition"])[metric]
+            .mean()
+            .reset_index()
+        )
+
+        pivot = summary.pivot(
+            index="condition",
+            columns="source_dataset",
+            values=metric,
+        )
+
+        pivot.plot(kind="bar", figsize=(8, 5))
+
+        plt.xlabel("Experimental condition")
+        plt.ylabel(metric)
+        plt.title(f"{metric} by dataset and prompt condition")
+        plt.tight_layout()
+
+        Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+        plt.savefig(output_path)
+        plt.close()
