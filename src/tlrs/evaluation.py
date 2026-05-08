@@ -12,7 +12,6 @@ class EvaluationResult:
     Evaluation scores for one model answer.
     """
     # exact_match: float
-    contains_reference: float
     fuzzy_match: float
     contradiction_marker: float
     reasoning_length: int
@@ -48,20 +47,6 @@ def fuzzy_match_score(prediction: str, reference: str) -> float:
 
     return token_set_ratio(pred, ref) / 100.0
 
-def contains_reference_answer(prediction: str, reference: str) -> float:
-    """
-    Check whether the reference answer appears in the prediction as a substring. 
-    Useful but not indicative of how correct an answer is.
-    """
-    normalized_prediction = normalize_text(prediction)
-    normalized_reference = normalize_text(reference)
-
-    if not normalized_reference:
-        return 0.0
-
-    return float(normalized_reference in normalized_prediction)
-
-
 def contradiction_marker_score(prediction: str) -> float:
     """
     Detect whether the model explicitly notices possible contradiction.
@@ -95,7 +80,6 @@ def evaluate_answer(prediction: str, reference: str) -> EvaluationResult:
     # L10.3-bias-completion-task.ipynb (output aggregation and comparison)
     return EvaluationResult(
         # exact_match=exact_match(prediction, reference),
-        contains_reference=contains_reference_answer(prediction, reference),
         fuzzy_match=fuzzy_match_score(prediction, reference),
         contradiction_marker=contradiction_marker_score(prediction),
         reasoning_length=reasoning_length(prediction),
@@ -108,7 +92,6 @@ def evaluation_to_dict(result: EvaluationResult) -> Dict[str, float]:
     """
     return {
         # "exact_match": result.exact_match,
-        "contains_reference": result.contains_reference,
         "fuzzy_match": result.fuzzy_match,
         "contradiction_marker": result.contradiction_marker,
         "reasoning_length": result.reasoning_length,

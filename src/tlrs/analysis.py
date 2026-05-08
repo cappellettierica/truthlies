@@ -1,6 +1,5 @@
 from typing import Iterable, List, Tuple
 
-
 def normalize_token(token: str) -> str:
     return token.strip().lower()
 
