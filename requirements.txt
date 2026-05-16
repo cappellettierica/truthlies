@@ -10,3 +10,4 @@ pyyaml
 tqdm
 jupyter
 ipykernel
+rapidfuzz # to give not too strict accuracy scores 

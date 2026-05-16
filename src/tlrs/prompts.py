@@ -1,10 +1,20 @@
 from typing import Callable, Dict
-
 from tlrs.data import ReasoningExample
 
+def format_context(example: ReasoningExample) -> str:
+    if example.context:
+        return f"""
+Context:
+{example.context}
+
+""".strip()
+
+    return ""
 
 def build_baseline_prompt(example):
     return f"""
+{format_context(example)}
+
 Q: {example.question}
 A:
 """.strip()
@@ -12,6 +22,8 @@ A:
 
 def build_noisy_prompt(example):
     return f"""
+{format_context(example)}
+
 Some people give misleading answers to this question.
 
 Q: {example.question}
@@ -21,6 +33,8 @@ A:
 
 def build_adversarial_prompt(example):
     return f"""
+{format_context(example)}
+
 A previous answer to this question may be false.
 
 Q: {example.question}
@@ -30,6 +44,8 @@ A:
 
 def build_self_check_prompt(example):
     return f"""
+{format_context(example)}
+
 Q: {example.question}
 
 Give your answer.

@@ -34,31 +34,6 @@ def plot_metric_by_condition(
     plt.close()
 
 
-def make_all_plots(results_path: str, figures_dir: str) -> None:
-    """
-    Create all project plots.
-    """
-    results = pd.read_csv(results_path)
-
-    metrics = [
-        "fuzzy_match",
-        "contains_reference",
-        "contradiction_marker",
-        "reasoning_length",
-        "truth_token_probability",
-    ]
-
-    for metric in metrics:
-        output_path = Path(figures_dir) / f"{metric}_by_condition.png"
-        plot_metric_by_condition(results, metric, str(output_path))
-
-        dataset_output_path = Path(figures_dir) / f"{metric}_by_dataset_and_condition.png"
-        plot_metric_by_dataset_and_condition(
-            results,
-            metric,
-            str(dataset_output_path),
-        )
-
 def plot_metric_by_dataset_and_condition(
         results: pd.DataFrame,
         metric: str,
@@ -90,3 +65,30 @@ def plot_metric_by_dataset_and_condition(
         Path(output_path).parent.mkdir(parents=True, exist_ok=True)
         plt.savefig(output_path)
         plt.close()
+
+
+def make_all_plots(results_path: str, figures_dir: str) -> None:
+    """
+    Create all project plots.
+    """
+    results = pd.read_csv(results_path)
+
+    metrics = [
+        "fuzzy_match",
+        "contains_reference",
+        "contradiction_marker",
+        "reasoning_length",
+        "truth_token_probability",
+    ]
+
+    for metric in metrics:
+        output_path = Path(figures_dir) / f"{metric}_by_condition.png"
+        plot_metric_by_condition(results, metric, str(output_path))
+
+        dataset_output_path = Path(figures_dir) / f"{metric}_by_dataset_and_condition.png"
+        plot_metric_by_dataset_and_condition(
+            results,
+            metric,
+            str(dataset_output_path),
+        )
+

@@ -70,6 +70,7 @@ class ReasoningExperiment:
                     "source_dataset": example.source_dataset,
                     "condition": condition,
                     "question": example.question,
+                    "context": example.context,
                     "reference_answer": example.reference_answer,
                     "model_output": model_output.text,
                     "truth_token_probability": truth_token_probability,
