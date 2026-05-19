@@ -1,29 +1,49 @@
-# Truth, Lies, and Reasoning Machines
+# Truth, lies, and reasoning machines
 
-This project studies how Large Language Models's reasoning reliability changes under truth distortion.
+The goal is to study whether prompt design can improve outputs when a small LLM model faces truth distortion scenarios under multiple prompting conditions:
 
-## Research Question
+- **Baseline**: standard factual prompting  
+- **Adversarial**: feeds the model potentially incorrect information  
+- **Self-check**: asks the model to verify assumptions before answering  
 
-How does controlled misinformation affect the factual accuracy and logical consistency of LLM-generated reasoning, and can self-verification prompts reduce reasoning failures?
+Experiments are performed on:
 
-## Experimental Conditions
+- **TruthfulQA**: questions designed to trigger common misconceptions and hallucinations  
+- **HotpotQA**: multi-hop reasoning questions requiring information integration  
 
-1. Baseline: factual prompt
-2. Noisy: prompt with contradictory or misleading context
-3. Adversarial: prompt explicitly pushes the model toward a false answer
-4. Self-check: model answers, then verifies assumptions
+Model outputs are evaluated using four metrics:
 
-## Datasets
+- **Fuzzy Match**: semantic similarity between generated and reference answers  
+- **Truth Token Probability**: probability assigned to tokens from the reference answer  
+- **Contradiction Marker Detection**: whether the model explicitly signals uncertainty or inconsistencies  
+- **Reasoning Length**: output length used as a lightweight reasoning proxy  
 
-- TruthfulQA
-- HotpotQA
-
-## Repository Structure
+## Project Structure
 
 ```text
-truth-lies-reasoning-machines/
-├── config.yaml
-├── scripts/
-├── src/
-├── notebooks/
-└── outputs/
+src/tlrs/
+├── data.py              # dataset loading and preprocessing
+├── prompts.py           # prompt construction
+├── models.py            # TinyLlama model wrapper
+├── experiment.py        # experiment pipeline
+├── evaluation.py        # evaluation metrics
+├── analysis.py          # token inspection   
+├── visualization.py     # result plotting
+├── utils.py             # helper functions
+```
+
+## Demo Notebook
+
+The complete experimental workflow is demonstrated in **`demo_pipeline.ipynb`**.
+
+The notebook walks through the full project pipeline step-by-step:
+
+- loading and inspecting TruthfulQA and HotpotQA
+- constructing prompt variants
+- generating model outputs
+- inspecting next-token probabilities
+- running the complete experiment
+- computing evaluation metrics
+- visualizing findings
+
+The notebook serves as a readable end-to-end demonstration of the entire experiment.
