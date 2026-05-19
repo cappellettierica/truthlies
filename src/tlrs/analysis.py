@@ -1,21 +1,42 @@
 from typing import Iterable, List, Tuple
 
-def normalize_token(token: str) -> str:
-    return token.strip().lower()
+def normalize_token(token: str) -> str: # normalize model tokens for comparison
+        return (
+        token
+        .replace("▁", "")
+        .replace("Ġ", "")
+        .strip()
+        .lower()
+    )
 
+def get_reference_target_tokens(
+    reference_answer: str,
+    tokenizer,
+    max_tokens: int = 5,
+) -> List[str]:
+   # extract tokenizer-level target tokens from the reference answer.
+    if not reference_answer:
+        return []
+
+    tokens = tokenizer.tokenize(reference_answer)
+
+    normalized_tokens = [
+        normalize_token(token)
+        for token in tokens
+        if normalize_token(token)
+    ]
+
+    return normalized_tokens[:max_tokens]
 
 def extract_target_token_probability(
+    # estimate how much probability the model assigns to truthful target tokens.
     top_tokens: List[Tuple[str, float]],
-    target_words: Iterable[str],
-) -> float:
-    """
-    Estimate how much probability the model assigns to truthful target tokens.
-    This is a lightweight interpretability measure based on the top-k next-token distribution.
-    """
+    target_tokens: Iterable[str],
+) -> float: 
     normalized_targets = {
-        word.strip().lower()
-        for word in target_words
-        if word and word.strip()
+        normalize_token(token)
+        for token in target_tokens
+        if token and normalize_token(token)
     }
 
     probability = 0.0
@@ -25,16 +46,3 @@ def extract_target_token_probability(
             probability += float(prob)
 
     return probability
-
-
-def get_reference_target_words(reference_answer: str) -> List[str]:
-    """
-    Extract simple candidate target words from the reference answer.
-    This works best for short answers such as names, countries, dates, yes/no answers, or single factual entities.
-    """
-    if not reference_answer:
-        return []
-
-    words = reference_answer.replace(".", "").replace(",", "").split()
-
-    return words[:3]

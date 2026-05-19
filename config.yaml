@@ -13,11 +13,11 @@ data:
   truthfulqa_split: "validation"
   hotpotqa_split: "validation"
   max_examples: 25
+  max_context_chars: 1000
 
 experiment:
   conditions:
     - baseline
-    - noisy
     - adversarial
     - self_check
 

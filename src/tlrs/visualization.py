@@ -75,7 +75,6 @@ def make_all_plots(results_path: str, figures_dir: str) -> None:
 
     metrics = [
         "fuzzy_match",
-        "contains_reference",
         "contradiction_marker",
         "reasoning_length",
         "truth_token_probability",

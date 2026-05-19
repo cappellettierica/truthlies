@@ -10,7 +10,7 @@ from tlrs.prompts import build_prompt
 
 from tlrs.analysis import (
     extract_target_token_probability,
-    get_reference_target_words,
+    get_reference_target_tokens,
 )
 
 
@@ -47,11 +47,14 @@ class ReasoningExperiment:
                     top_k=20,
                 )
 
-                target_words = get_reference_target_words(example.reference_answer)
+                target_tokens = get_reference_target_tokens(
+                    reference_answer=example.reference_answer,
+                    tokenizer=self.model.tokenizer,
+                    )
 
                 truth_token_probability = extract_target_token_probability(
                     top_tokens=top_tokens,
-                    target_words=target_words,
+                    target_tokens=target_tokens,
                 )
                 model_output = self.model.generate(prompt)
                     
@@ -73,6 +76,7 @@ class ReasoningExperiment:
                     "context": example.context,
                     "reference_answer": example.reference_answer,
                     "model_output": model_output.text,
+                    "target_tokens":str(target_tokens),
                     "truth_token_probability": truth_token_probability,
                     "top_next_tokens": str(top_tokens),
                 }
