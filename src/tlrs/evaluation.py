@@ -8,49 +8,32 @@ from tlrs.utils import safe_str
 
 @dataclass
 class EvaluationResult:
-    """
-    Evaluation scores for one model answer.
-    """
     # exact_match: float
     fuzzy_match: float
     contradiction_marker: float
     reasoning_length: int
 
 
-def normalize_text(text: str) -> str:
-    """
-    Normalize text for simple answer comparison.
-    """
+def normalize_text(text: str) -> str: # normalise text for simple answer comparison
     text = safe_str(text).lower()
-    text = re.sub(r"[^a-z0-9\s]", " ", text)
-    text = re.sub(r"\s+", " ", text)
+    text = re.sub(r"[^a-z0-9\s]", " ", text) # every character that is not a letter/number -> space
+    text = re.sub(r"\s+", " ", text) # multiple spaces/newlines/tabs -> one space
 
     return text.strip()
 
-
-# def exact_match(prediction: str, reference: str) -> float:
-    """
-    Compute exact-match score.
-    """
+# def exact_match(prediction: str, reference: str) -> float: # exact match score
     return float(normalize_text(prediction) == normalize_text(reference))
 
-def fuzzy_match_score(prediction: str, reference: str) -> float:
-    """
-    Compute fuzzy similarity between prediction and reference.
-    Returns value in [0, 1].
-    """
+def fuzzy_match_score(prediction: str, reference: str) -> float: # fuzzy similarity between prediction and reference, [0, 1]
     pred = normalize_text(prediction)
-    ref = normalize_text(reference)
+    ref = normalize_text(reference) 
 
-    if not ref:
+    if not ref: # failsafe
         return 0.0
 
     return token_set_ratio(pred, ref) / 100.0
 
-def contradiction_marker_score(prediction: str) -> float:
-    """
-    Detect whether the model explicitly notices possible contradiction.
-    """
+def contradiction_marker_score(prediction: str) -> float: # model explicitly notices possible contradiction?
     markers = [
     "contradiction",
     "inconsistent",
@@ -66,18 +49,15 @@ def contradiction_marker_score(prediction: str) -> float:
 
     prediction = normalize_text(prediction)
 
-    return float(any(marker in prediction for marker in markers))
+    return float(any(marker in prediction for marker in markers)) # binary yes 1 or no 0
 
 
-def reasoning_length(prediction: str) -> int:
-    """
-    Count words as a simple proxy for reasoning verbosity.
-    """
+def reasoning_length(prediction: str) -> int: # count words as a simple proxy for reasoning verbosity
     return len(normalize_text(prediction).split())
 
 
-def evaluate_answer(prediction: str, reference: str) -> EvaluationResult:
-    # L10.3-bias-completion-task.ipynb (output aggregation and comparison)
+def evaluate_answer(prediction: str, reference: str) -> EvaluationResult: # returns 1 object containing all metric scores
+    # 10.3 output aggregation and comparison
     return EvaluationResult(
         # exact_match=exact_match(prediction, reference),
         fuzzy_match=fuzzy_match_score(prediction, reference),
@@ -86,10 +66,7 @@ def evaluate_answer(prediction: str, reference: str) -> EvaluationResult:
     )
 
 
-def evaluation_to_dict(result: EvaluationResult) -> Dict[str, float]:
-    """
-    Convert evaluation result to dictionary.
-    """
+def evaluation_to_dict(result: EvaluationResult) -> Dict[str, float]: # evaluation result to dictionary
     return {
         # "exact_match": result.exact_match,
         "fuzzy_match": result.fuzzy_match,
