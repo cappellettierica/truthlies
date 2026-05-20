@@ -4,23 +4,19 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 
-def plot_metric_by_condition(
+def plot_metric_by_condition( 
+# 10.3 aggregation of outputs into comparable summaries
     results: pd.DataFrame,
     metric: str,
     output_path: str,
 ) -> None:
-    """
-    Plot average metric by condition.
-
-    # Inspired by: L10.3-bias-completion-task.ipynb — aggregation of outputs into comparable summaries.
-    """
     summary = (
         results
-        .groupby("condition")[metric]
+        .groupby("condition")[metric] # (basline, adversarial, self-check)[selects the metric column i want to plot]
         .mean()
         .reset_index()
-        .sort_values("condition")
-    )
+        .sort_values("condition") # alphabetical order. useless but i already saved results
+    ) # average selected metric for each prompt condition
 
     plt.figure(figsize=(8, 5))
     plt.bar(summary["condition"], summary[metric])
@@ -31,47 +27,42 @@ def plot_metric_by_condition(
 
     Path(output_path).parent.mkdir(parents=True, exist_ok=True)
     plt.savefig(output_path)
-    plt.close()
+    plt.close() 
+# i don't really use this in my results
 
 
 def plot_metric_by_dataset_and_condition(
-        results: pd.DataFrame,
-        metric: str,
-        output_path: str,
-    ) -> None:
-        """
-        Plot average metric by dataset and experimental condition.
-        """
-        summary = (
-            results
-            .groupby(["source_dataset", "condition"])[metric]
-            .mean()
-            .reset_index()
-        )
+    results: pd.DataFrame,
+    metric: str,
+    output_path: str,
+) -> None:
+    summary = (
+        results
+        .groupby(["source_dataset", "condition"])[metric]
+        .mean()
+        .reset_index()
+    ) # average selected metric for each dataset-condition pair
 
-        pivot = summary.pivot(
-            index="condition",
-            columns="source_dataset",
-            values=metric,
-        )
+    pivot = summary.pivot( # summary table into a pivot table. makes each condition a row and each dataset a column
+        index="condition",
+        columns="source_dataset",
+        values=metric,
+    )
 
-        pivot.plot(kind="bar", figsize=(8, 5))
+    pivot.plot(kind="bar", figsize=(8, 5)) # grouped bar chart from the pivot table
 
-        plt.xlabel("Experimental condition")
-        plt.ylabel(metric)
-        plt.title(f"{metric} by dataset and prompt condition")
-        plt.tight_layout()
+    plt.xlabel("Experimental condition")
+    plt.ylabel(metric)
+    plt.title(f"{metric} by dataset and prompt condition")
+    plt.tight_layout()
 
-        Path(output_path).parent.mkdir(parents=True, exist_ok=True)
-        plt.savefig(output_path)
-        plt.close()
+    Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+    plt.savefig(output_path)
+    plt.close()
 
 
 def make_all_plots(results_path: str, figures_dir: str) -> None:
-    """
-    Create all project plots.
-    """
-    results = pd.read_csv(results_path)
+    results = pd.read_csv(results_path) # load experiment results
 
     metrics = [
         "fuzzy_match",
