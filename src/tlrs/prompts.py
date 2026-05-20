@@ -1,7 +1,7 @@
 from typing import Callable, Dict
 from tlrs.data import ReasoningExample
 
-def format_context(example: ReasoningExample) -> str:
+def format_context(example: ReasoningExample) -> str:  # format context block
     if example.context:
         return f"""
 Context:
@@ -11,6 +11,9 @@ Context:
 
     return ""
 
+
+
+
 # truthfulqa prompts
 def build_truthfulqa_baseline_prompt(example: ReasoningExample) -> str:
     return f"""
@@ -19,6 +22,7 @@ A:
 """.strip()
 
 
+# unused
 def build_truthfulqa_noisy_prompt(example: ReasoningExample) -> str:
     return f"""
 Some people may answer this question incorrectly.
@@ -56,6 +60,8 @@ Then briefly state whether the answer could be affected by a common misconceptio
 A:
 """.strip()
 
+
+
 # hotpotqa prompts
 def build_hotpotqa_baseline_prompt(example: ReasoningExample) -> str:
     return f"""
@@ -68,6 +74,7 @@ A:
 """.strip()
 
 
+#unused 
 def build_hotpotqa_noisy_prompt(example: ReasoningExample) -> str:
     return f"""
 {format_context(example)}
@@ -103,6 +110,8 @@ Q: {example.question}
 A:
 """.strip()
 
+
+
 # prompts builder
 def build_prompt(example: ReasoningExample, condition: str) -> str:
     # prompt construction by dataset and experimental condition.
@@ -124,9 +133,9 @@ def build_prompt(example: ReasoningExample, condition: str) -> str:
     elif example.source_dataset == "hotpotqa":
         builders = hotpotqa_builders
     else:
-        raise ValueError(f"Unknown dataset: {example.source_dataset}")
+        raise ValueError(f"Unknown dataset: {example.source_dataset}")  # catch wrong dataset names
 
     if condition not in builders:
-        raise ValueError(f"Unknown condition: {condition}")
+        raise ValueError(f"Unknown condition: {condition}") # catch wrong condition names
 
-    return builders[condition](example)
+    return builders[condition](example) # build and return selected prompt
