@@ -3,8 +3,7 @@ from typing import Dict, List
 
 from datasets import load_dataset
 
-
-# data container that defines standard internal representation of one reasoning example.
+# how one example is stored.
 @dataclass
 class ReasoningExample:
     example_id: str
@@ -14,18 +13,18 @@ class ReasoningExample:
     context: str = "" # hotpot
     misleading_answer: str = "" # truthful
 
-def truncate_text(text: str, max_chars: int) -> str: # truncate context
-    text = text.strip()
+def truncate_text(text: str, max_chars: int) -> str: # truncate context for computational reasons
+    text = text.strip() 
 
     if len(text) <= max_chars: # yaml
-        return text
+        return text # unchanged if already short enough
 
-    return text[:max_chars].rsplit(" ", 1)[0].strip() + " [...]"
+    return text[:max_chars].rsplit(" ", 1)[0].strip() + " [...]" # shorten context, remove last incomplete word, add [...].
 
 class DatasetLoader:
     def __init__(self, config: dict):
-        self.max_examples = config["data"]["max_examples"]
-        self.max_context_chars = config["data"]["max_context_chars"]
+        self.max_examples = config["data"]["max_examples"] # how many examples per dataset
+        self.max_context_chars = config["data"]["max_context_chars"] # how long context can be
 
     def load_truthfulqa(self, split: str = "validation") -> List[ReasoningExample]:
         dataset = load_dataset(
@@ -68,18 +67,18 @@ class DatasetLoader:
         n = min(self.max_examples, len(dataset))
         
         for index, row in enumerate(dataset.select(range(n))):
-            context_parts = []
+            context_parts = [] # empty list where pieces of context will be stored
 
             for title, sentences in zip(
                 row["context"]["title"],
                 row["context"]["sentences"],
             ):
-                # keep only the first sentences from each paragraph.
-                paragraph = " ".join(sentences[:2])
+                # keep only the first sentences from each context item paragraph, adds the title
+                paragraph = " ".join(sentences[:2]) # (joins sentences into one string)
                 context_parts.append(f"{title}: {paragraph}")
                 # preserves evidence while avoiding massive prompts.
 
-            context_text = "\n\n".join(context_parts)
+            context_text = "\n\n".join(context_parts) # join all the context parts
             context_text = truncate_text( # otherwise runtime > 5h
                 context_text,
                 max_chars=self.max_context_chars
