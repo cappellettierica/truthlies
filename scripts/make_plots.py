@@ -1,3 +1,5 @@
+# the plots are shown in the notebook, it' better to run that
+
 from tlrs.config import load_config
 from tlrs.visualization import make_all_plots
 

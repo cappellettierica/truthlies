@@ -1,3 +1,5 @@
+# for better understamding of the project, run the experiment in the notebook
+
 from tlrs.config import ensure_output_dirs, load_config
 from tlrs.data import DatasetLoader
 from tlrs.experiment import ReasoningExperiment
@@ -31,7 +33,6 @@ def main() -> None:
     results.to_csv(config["outputs"]["results_file"], index=False)
 
     print(f"Saved results to {config['outputs']['results_file']}")
-
 
 if __name__ == "__main__":
     main()
