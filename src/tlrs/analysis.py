@@ -1,10 +1,10 @@
 from typing import Iterable, List, Tuple
 
-def normalize_token(token: str) -> str: # normalize model tokens for comparison
-        return (
+def normalize_token(token: str) -> str: # clean tokenizer symbols before comparing tokens
+    return (
         token
-        .replace("▁", "")
-        .replace("Ġ", "")
+        .replace("▁", "") # remove token markers 
+        .replace("Ġ", "") # remove token markers 
         .strip()
         .lower()
     )
@@ -14,11 +14,11 @@ def get_reference_target_tokens(
     tokenizer,
     max_tokens: int = 5,
 ) -> List[str]:
-   # extract tokenizer-level target tokens from the reference answer.
+   # extract first tokenizer-level tokens from the reference answer
     if not reference_answer:
-        return []
+        return [] # failsafe
 
-    tokens = tokenizer.tokenize(reference_answer)
+    tokens = tokenizer.tokenize(reference_answer)  # tokenize using the model tokenizer
 
     normalized_tokens = [
         normalize_token(token)
@@ -29,20 +29,21 @@ def get_reference_target_tokens(
     return normalized_tokens[:max_tokens]
 
 def extract_target_token_probability(
-    # estimate how much probability the model assigns to truthful target tokens.
+    # probability the model assigns to target tokens
     top_tokens: List[Tuple[str, float]],
     target_tokens: Iterable[str],
 ) -> float: 
+    # sum probability assigned to reference target tokens
     normalized_targets = {
         normalize_token(token)
         for token in target_tokens
         if token and normalize_token(token)
-    }
+    } # normalize target tokens once for comparison
 
     probability = 0.0
 
     for token, prob in top_tokens:
         if normalize_token(token) in normalized_targets:
-            probability += float(prob)
+            probability += float(prob) # add probability if predicted token matches target token
 
     return probability
